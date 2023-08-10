@@ -17,13 +17,13 @@ interface Repository {
   };
 }
 
-
 const Dashboard: React.FC = () => {
-
   const [newRepo, setNewRepo] = useState('');
   const [inputError, setInputError] = useState('');
   const [repositories, setRepositories] = useState<Repository[]>(() => {
-    const storagedRepositories = localStorage.getItem('@GithubExplorer:repositories');
+    const storagedRepositories = localStorage.getItem(
+      '@GithubExplorer:repositories',
+    );
 
     if (storagedRepositories) {
       return JSON.parse(storagedRepositories);
@@ -33,10 +33,15 @@ const Dashboard: React.FC = () => {
   });
 
   useEffect(() => {
-    localStorage.setItem('@GithubExplorer:repositories', JSON.stringify(repositories));
-  }, [repositories])
+    localStorage.setItem(
+      '@GithubExplorer:repositories',
+      JSON.stringify(repositories),
+    );
+  }, [repositories]);
 
-  async function handleAddRepository(event: FormEvent<HTMLFormElement>): Promise<void> {
+  async function handleAddRepository(
+    event: FormEvent<HTMLFormElement>,
+  ): Promise<void> {
     event.preventDefault();
 
     if (!newRepo) {
@@ -69,12 +74,18 @@ const Dashboard: React.FC = () => {
         <button type="submit">Pesquisar</button>
       </Form>
 
-      { inputError && <Error>{inputError}</Error>}
+      {inputError && <Error>{inputError}</Error>}
 
       <Repositories>
-        {repositories.map(repository => (
-          <Link key={repository.full_name} to={`/repository/${repository.full_name}`}>
-            <img src={repository.owner.avatar_url} alt={repository.owner.login} />
+        {repositories.map((repository) => (
+          <Link
+            key={repository.full_name}
+            to={`/repository/${repository.full_name}/${repository.description}`}
+          >
+            <img
+              src={repository.owner.avatar_url}
+              alt={repository.owner.login}
+            />
             <div>
               <strong>{repository.full_name}</strong>
               <p>{repository.description}</p>
@@ -82,10 +93,9 @@ const Dashboard: React.FC = () => {
             <FiChevronRight size={20} />
           </Link>
         ))}
-
       </Repositories>
     </>
   );
-}
+};
 
 export default Dashboard;
